@@ -1,10 +1,10 @@
+import { useEffect } from 'react'
 import {
   RouterProvider,
   createBrowserRouter,
   useNavigate,
 } from 'react-router-dom'
 import Dashboard from './Dashboard'
-import { useEffect } from 'react'
 import ErrorPage from './ErrorPage'
 
 const Redirect = () => {
