@@ -6,6 +6,12 @@ const config = {
   USER: {
     BASE: '/user',
   },
+  LOGIN: {
+    BASE: '/login',
+  },
+  SYNC: {
+    BASE: '/synchronize',
+  },
   INFO: {
     BASE: '/info',
   },

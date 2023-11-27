@@ -1,22 +1,18 @@
 import * as d3 from 'd3'
+import _ from 'lodash'
 
-const barChart = (data, svg) => {
+const barChart = (data, svg, onBarPress) => {
   let margin = { top: 20, right: 20, bottom: 30, left: 80 }
-  let svgWidth = 720,
-    svgHeight = 300
+  let svgWidth = 600,
+    svgHeight = 350
   let height = svgHeight - margin.top - margin.bottom,
     width = svgWidth - margin.left - margin.right
-  let sourceNames = [],
-    sourceCount = []
+  let sourceNames = Object.keys(data),
+    sourceCount = Object.values(data)
 
   let x = d3.scaleLinear().rangeRound([0, width]),
     y = d3.scaleBand().rangeRound([0, height]).padding(0.1)
-  for (let key in data) {
-    if (data.hasOwnProperty(key)) {
-      sourceNames.push(key)
-      sourceCount.push(parseInt(data[key]))
-    }
-  }
+
   x.domain([
     0,
     d3.max(sourceCount, function (d) {
@@ -51,10 +47,23 @@ const barChart = (data, svg) => {
       return y(d)
     })
     .attr('width', function (d) {
-      return x(data[d])
+      // Decrease the width by a factor (e.g., 0.8)
+      return x(data[d]) * 0.8
     })
     .attr('height', function (d) {
-      return y.bandwidth()
+      // Decrease the height by a factor (e.g., 0.8)
+      return y.bandwidth() * 0.8
+    })
+    .attr('fill', function (d) {
+      // Set different colors based on the height or other criteria
+      if (data[d] < _.max(sourceCount)) {
+        return '#033d8f'
+      } else {
+        return '#692701'
+      }
+    })
+    .on('click', function (event, d) {
+      onBarPress(String(d).toLowerCase())
     })
 
   bars
@@ -63,7 +72,7 @@ const barChart = (data, svg) => {
       return data[d]
     })
     .attr('x', function (d) {
-      return x(data[d]) + 15
+      return x(data[d]) - 40
     })
     .attr('y', function (d) {
       return y(d) + y.bandwidth() * (0.5 + 0.1) // here 0.1 is the padding scale
