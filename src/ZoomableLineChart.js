@@ -116,8 +116,11 @@ function ZoomableLineChart({ token }) {
     if (!loading && data) {
       clearCharts()
       let lineData = data.info.map((d) => {
+        const date = new Date(d.day)
+        const month = date.toLocaleString('en-US', { month: 'short' })
+        const n = date.getDate()
         return {
-          day: new Date(d.day).toDateString(),
+          day: `${n} ${month}`,
           A: d.a || d.b || d.c || d.d || d.e || d.f,
         }
       })
