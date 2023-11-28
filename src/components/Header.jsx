@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Api from '../api'
 import Login from '../Login'
 import SignUp from '../SignUp'
+import Cookies from 'js-cookie'
 
 const Header = ({ login, setToken, setIslogin, user, setUser }) => {
   const [openLogin, setOpenLogin] = useState(false)
@@ -11,8 +12,7 @@ const Header = ({ login, setToken, setIslogin, user, setUser }) => {
   const handleLogin = (data) => {
     Api.loginUser(data)
       .then((data) => {
-        const storageData = JSON.stringify({ token: data.token })
-        localStorage.setItem('task_app', storageData)
+        Cookies.set('insightUserToken', String(data.token), { expires: 7 })
 
         if (data.token) {
           const { _id, name, email } = data.user
@@ -32,8 +32,7 @@ const Header = ({ login, setToken, setIslogin, user, setUser }) => {
 
     Api.signupUser(data)
       .then((data) => {
-        const storageData = JSON.stringify({ token: data.token })
-        localStorage.setItem('task_app', storageData)
+        Cookies.set('insightUserToken', String(data.token), { expires: 7 })
         setOpenSignup(false)
         if (data.token) {
           const { _id, name, email } = data.user
@@ -48,7 +47,7 @@ const Header = ({ login, setToken, setIslogin, user, setUser }) => {
   }
 
   const setLogout = () => {
-    localStorage.removeItem('task_app')
+    Cookies.remove('insightUserToken')
     setIslogin(false)
     setToken('')
   }

@@ -4,26 +4,28 @@ import { Typography } from '@mui/material'
 import Header from './components/Header'
 import Api from './api'
 import empty from './assets/empty.svg'
+import Cookies from 'js-cookie'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 
 const Dashboard = () => {
   const [isLogin, setIsLogin] = useState(false)
   const [token, setToken] = useState('')
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const storage = localStorage.getItem('task_app')
-    const user = JSON.parse(storage)
-    if (user) {
-      Api.synchronizeUser(user.token)
-        .then((data) => {
-          const storageData = JSON.stringify({ token: data.token })
-          localStorage.setItem('task_app', storageData)
-
-          if (data.token) {
-            const { _id, name, email } = data.user
-            setToken(data.token)
+    const token = Cookies.get('insightUserToken')
+    if (token) {
+      setLoading(true)
+      Api.synchronizeUser(token)
+        .then((res) => {
+          if (res.success) {
+            const { _id, name, email } = res.user
+            setToken(token)
             setUser({ _id, name, email })
             setIsLogin(true)
+            setLoading(false)
           }
         })
         .catch((error) => {
@@ -32,6 +34,15 @@ const Dashboard = () => {
     }
   }, [])
 
+  if (loading) {
+    return (
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', paddingTop: '25%' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <div>
       <Header
