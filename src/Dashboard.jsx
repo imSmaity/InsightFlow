@@ -30,6 +30,7 @@ const Dashboard = () => {
         })
         .catch((error) => {
           console.log(error)
+          setLoading(false)
         })
     }
   }, [])
